@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'IPaFlickr_Example' do
+  pod 'IPaFlickr', :path => '../'
+
+  target 'IPaFlickr_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

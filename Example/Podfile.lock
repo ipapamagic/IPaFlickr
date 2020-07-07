@@ -1,0 +1,16 @@
+PODS:
+  - IPaFlickr (0.1.0)
+
+DEPENDENCIES:
+  - IPaFlickr (from `../`)
+
+EXTERNAL SOURCES:
+  IPaFlickr:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  IPaFlickr: d46fec2ae9d37950cc7ce2020902e6dd873a9f70
+
+PODFILE CHECKSUM: 54310333eddcfe0c51bb7edc02260dd3768b3e42
+
+COCOAPODS: 1.9.1

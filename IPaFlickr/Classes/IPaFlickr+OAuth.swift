@@ -12,7 +12,7 @@ import IPaLog
 import IPaSecurity
 extension IPaFlickr {
     static let flickrKeyChainService = "com.IPaFlickr." + (Bundle.main.bundleIdentifier ?? "")
-    static let urlEscapeEncodeAllowCharacter = CharacterSet(charactersIn: "`~!@#$^&*()=+[]\\{}|;':\",/<>?%").inverted
+    static let urlEscapeEncodeAllowCharacter = CharacterSet(charactersIn: "`~!@#$^&*()=+[]\\{}|;':\",/<>?% \n").inverted
     func oauthUrl(from baseUrlString:String,method:String,params:[String:Any]) -> String {
         let newParams = self.signedOAuth(baseUrlString, method: method, params: params)
         let query:[String] = newParams.compactMap { (key,value) in
@@ -147,6 +147,7 @@ extension IPaFlickr {
             }
             
             let userInfo = UserInfo(fullName: fullName, nsId: user_nsid, userName: userName)
+            self.userInfo = userInfo
             complete(.success(userInfo))
         }
         task.resume()

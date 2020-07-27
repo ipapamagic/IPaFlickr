@@ -22,7 +22,7 @@ class IPaFlickrURLResourceUI: IPaURLResourceUI {
         }
         return urlString
     }
-    open override func apiUploadOperation(_ api:String,method:String,params:[String:Any],files:[IPaMultipartFile],complete:@escaping IPaURLResourceUIResultHandler) -> IPaURLRequestUploadOperation {
+    open override func apiUploadOperation(_ api:String,method:String,headerFields:[String:String]?, params:[String:Any],files:[IPaMultipartFile],complete:@escaping IPaURLResourceUIResultHandler) -> IPaURLRequestUploadOperation {
         var newParams = params
         let apiUrl = self.urlString(for: api)
         if IPaFlickr.shared.authorized {
@@ -36,9 +36,9 @@ class IPaFlickrURLResourceUI: IPaURLResourceUI {
                 return dict
             }
         }
-        return super.apiUploadOperation(api, method: method, params: newParams, files: files, complete: complete)
+        return super.apiUploadOperation(api, method: method, headerFields: nil, params: newParams, files: files, complete: complete)
     }
-    override func apiPerformOperation(_ api:String,method:String,headerFields:[String:String]? = nil,params:[String:Any]?,complete:@escaping IPaURLResourceUIResultHandler) -> IPaURLRequestDataOperation
+    override func apiDataOperation(_ api:String,method:String,headerFields:[String:String]? = nil,params:[String:Any]?,complete:@escaping IPaURLResourceUIResultHandler) -> IPaURLRequestDataOperation
 
     {
         let method = method.uppercased()

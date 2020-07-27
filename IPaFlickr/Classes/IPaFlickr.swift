@@ -33,6 +33,7 @@ open class IPaFlickr: NSObject {
     var authToken:String?
     var authSecret:String?
     var authorized = false
+    var userInfo:UserInfo?
     public var isLogin:Bool {
         return self.authorized
     }
@@ -128,7 +129,9 @@ open class IPaFlickr: NSObject {
                         self.authorized = true
                         self.authToken = token
                         self.authSecret = secret
-                        complete(.success(UserInfo(fullName: fullame, nsId: nsid, userName: userName)))
+                        let userInfo = UserInfo(fullName: fullame, nsId: nsid, userName: userName)
+                        self.userInfo = userInfo
+                        complete(.success(userInfo))
                     case .failure(let error):
                         complete(.failure(error))
                     }
@@ -156,17 +159,23 @@ open class IPaFlickr: NSObject {
         delChainQuery.secAttrService = bundleId
         _ = delChainQuery.secItemDelete()
     }
-    open func photosGetSizes(_ photoId:String,complete:@escaping ([String:Any])->()) {
+    open func getMyPhotoLink(_ photoId:String) -> String? {
+        guard let userInfo = userInfo else {
+            return nil
+        }
+        return "https://www.flickr.com/photos/\(userInfo.nsId)/\(photoId)"
+    }
+    open func photosGetSizes(_ photoId:String,complete:@escaping ([[String:Any]])->()) {
         self.apiFlickrGet("flickr.photos.getSizes", params: ["photo_id":photoId]) { (result) in
             switch result {
             case .success(let (_ ,responseData)):
-                guard let data = responseData as? [String:Any] else {
-                    complete([String:Any]())
+                guard let data = responseData as? [String:Any],let sizes = data["sizes"] as? [String:Any],let size = sizes["size"] as? [[String:Any]] else {
+                    complete([[String:Any]]())
                     return
                 }
-                complete(data)
+                complete(size)
             case .failure(_):
-                complete([String:Any]())
+                complete([[String:Any]]())
             }
             
         }
@@ -205,7 +214,7 @@ open class IPaFlickr: NSObject {
             result in
             switch result {
             case .success(let (_,responseData)):
-                guard let data = responseData as? [String:Any],let photoId = data["photoid"] as? String else {
+                guard let data = responseData as? [String:Any],let rsp = data["rsp"] as? [String:Any],let photo = rsp["photoid"] as? [String:String],let photoId = photo["_content"] else {
                     complete(nil)
                     return
                 }

@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'IPaFlickr'
-  s.version          = '1.0'
+  s.version          = '1.1'
   s.summary          = 'A short description of IPaFlickr.'
 
 # This description is used to generate tags and improve search results.

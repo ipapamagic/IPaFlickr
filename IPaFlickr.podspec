@@ -41,5 +41,5 @@ TODO: Add long description of the pod here.
   s.dependency 'IPaSecurity', '~> 3.1'
   s.dependency 'IPaLog'
   s.dependency 'IPaKeyChain', '~> 2.2'
-  s.dependency 'IPaURLResourceUI', '~> 4.0'
+  s.dependency 'IPaURLResourceUI', '~> 5.0'
 end

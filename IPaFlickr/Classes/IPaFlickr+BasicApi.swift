@@ -20,7 +20,7 @@ extension IPaFlickr {
         params["title"] = "photo"
 
         let file = IPaMultipartFile(name: "photo", mime: "image/jpeg", fileName: "photo.jpg", fileData: image)
-        _ = self.upResourceUI.apiUpload("upload", method: "POST",headerFields: nil, params: params, file: file, complete: complete)
+        _ = self.upResourceUI.apiUpload("upload", method: .post,headerFields: nil, params: params, file: file, complete: complete)
         
         
     }

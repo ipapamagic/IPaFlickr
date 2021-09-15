@@ -38,13 +38,12 @@ open class IPaFlickr: NSObject {
         return self.authorized
     }
     lazy var resourceUI:IPaFlickrURLResourceUI = {
-        var resourceUI = IPaFlickrURLResourceUI()
-        resourceUI.baseURL = "https://api.flickr.com/services/"
+        var resourceUI = IPaFlickrURLResourceUI(with: URL(string:"https://api.flickr.com/services/")!)
+        
         return resourceUI
     }()
     lazy var upResourceUI:IPaFlickrURLResourceUI = {
-        var resourceUI = IPaFlickrURLResourceUI()
-        resourceUI.baseURL = "https://up.flickr.com/services/"
+        var resourceUI = IPaFlickrURLResourceUI(with:URL(string:"https://up.flickr.com/services/")!)
         return resourceUI
     }()
     public enum Permission:String {
@@ -120,9 +119,10 @@ open class IPaFlickr: NSObject {
             if let token = result.secAttrAccount,let secretData = result.secValueData,let secret = String(data: secretData as Data, encoding: String.Encoding.utf8)  {
                 
                 self.apiFlickrGet("flickr.auth.oauth.checkToken", params: ["oauth_token": token]) { result in
+                    
                     switch result {
                     case .success(let (_,responseData)):
-                        guard let data = try? responseData.decodeJson() as? [String:Any],let stat = data["stat"] as? String,stat == "ok",let oauth = data["oauth"] as? [String:Any],let user = oauth["user"] as? [String:Any],let nsid = user["nsid"] as? String,let userName = user["username"] as? String,let fullame = user["fullname"] as? String else {
+                        guard let data = responseData.jsonData as? [String:Any],let stat = data["stat"] as? String,stat == "ok",let oauth = data["oauth"] as? [String:Any],let user = oauth["user"] as? [String:Any],let nsid = user["nsid"] as? String,let userName = user["username"] as? String,let fullame = user["fullname"] as? String else {
                             complete(.failure(IPaFlickr.oauthNoValidTokenError))
                             return
                         }
@@ -169,7 +169,7 @@ open class IPaFlickr: NSObject {
         self.apiFlickrGet("flickr.photos.getSizes", params: ["photo_id":photoId]) { (result) in
             switch result {
             case .success(let (_ ,responseData)):
-                guard let data = try? responseData.decodeJson() as? [String:Any],let sizes = data["sizes"] as? [String:Any],let size = sizes["size"] as? [[String:Any]] else {
+                guard let data = responseData.jsonData as? [String:Any],let sizes = data["sizes"] as? [String:Any],let size = sizes["size"] as? [[String:Any]] else {
                     complete([[String:Any]]())
                     return
                 }
@@ -214,7 +214,7 @@ open class IPaFlickr: NSObject {
             result in
             switch result {
             case .success(let (_,responseData)):
-                guard let data = try? responseData.decodeXML() as? [String:Any],let rsp = data["rsp"] as? [String:Any],let photo = rsp["photoid"] as? [String:String],let photoId = photo["_content"] else {
+                guard let data = responseData.xmlData as? [String:Any],let rsp = data["rsp"] as? [String:Any],let photo = rsp["photoid"] as? [String:String],let photoId = photo["_content"] else {
                     complete(nil)
                     return
                 }

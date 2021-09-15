@@ -8,10 +8,10 @@
 import UIKit
 import IPaURLResourceUI
 class IPaFlickrURLResourceUI: IPaURLResourceUI {
+    override func generateQueryUrl(_ apiURL:URL,params:[String:Any]?)->URL {
     
-    override func urlString(for getApi:String!, params:[String:Any]?) -> String! {
         let params = params ?? [String:Any]()
-        let baseUrl = self.baseURL + getApi
+        let baseUrl = apiURL.absoluteString
         var urlString:String
         if IPaFlickr.shared.authorized {
             urlString = IPaFlickr.shared.oauthUrl(from: baseUrl, method: "GET", params: params)
@@ -20,34 +20,33 @@ class IPaFlickrURLResourceUI: IPaURLResourceUI {
             urlString = baseUrl + "?" + IPaFlickr.shared.signedQueryString(params)
             
         }
-        return urlString
+        return URL(string:urlString)!
     }
-    
-    open override func apiUploadOperation(_ api:String,method:IPaURLResourceUI.HttpMethod,headerFields:[String:String]?, params:[String:Any],files:[IPaMultipartFile],complete:@escaping IPaURLResourceUIResultHandler) -> IPaURLRequestUploadOperation {
-        var newParams = params
-        let apiUrl = self.urlString(for: api)
+    override
+    public func apiFormDataUploadOperation(_ api:String,method:IPaURLResourceUI.HttpMethod,headerFields:[String:String]?, params:[String:Any]?,files:[IPaMultipartFile],complete:@escaping IPaURLResourceUIResultHandler) -> IPaURLRequestFormDataUploadTaskOperation {
+        var newParams = params ?? [String:Any]()
+        
+        let apiUrl:URL = self.baseUrl.appendingPathComponent(api)
         if IPaFlickr.shared.authorized {
-            newParams = IPaFlickr.shared.signedOAuth(apiUrl, method: method.rawValue, params: params)
+            newParams = IPaFlickr.shared.signedOAuth(apiUrl.absoluteString, method: method.rawValue, params: params)
         }
         else {
-            let paramPairs = IPaFlickr.shared.signedArgumentComponent(params)
+            let paramPairs = IPaFlickr.shared.signedArgumentComponent(newParams)
             newParams = paramPairs.reduce([:]) {
                 var dict:[String:Any] = $0
                 dict[$1.0] = $1.1
                 return dict
             }
         }
-        return super.apiUploadOperation(api, method: method, headerFields: nil, params: newParams, files: files, complete: complete)
+        return super.apiFormDataUploadOperation(api, method: method, headerFields: nil, params: newParams, files: files, complete: complete)
     }
-    override func apiDataOperation(_ api:String,method:IPaURLResourceUI.HttpMethod,headerFields:[String:String]? = nil,params:[String:Any]?,complete:@escaping IPaURLResourceUIResultHandler) -> IPaURLRequestDataOperation
-
-    {
+    override func apiData(_ api:String,method:HttpMethod,headerFields:[String:String]? = nil,params:[String:Any]? = nil,complete:@escaping IPaURLResourceUIResultHandler) -> IPaURLRequestDataTaskOperation {
         let method = method.rawValue.uppercased()
-        let apiURL = urlString(for: api)
+        let apiUrl:URL = self.baseUrl.appendingPathComponent(api)
         
         var params = params ?? [String:Any]()
         if IPaFlickr.shared.authorized {
-            params = IPaFlickr.shared.signedOAuth(apiURL, method: method, params: params)
+            params = IPaFlickr.shared.signedOAuth(apiUrl.absoluteString, method: method, params: params)
         }
         else {
             _ = IPaFlickr.shared.signed(params, onProcessParam: { (key, value) in
@@ -56,7 +55,7 @@ class IPaFlickrURLResourceUI: IPaURLResourceUI {
             }) as [(String,String)]
         }
         
-        var request = URLRequest(url: URL(string: apiURL)!)
+        var request = URLRequest(url: apiUrl)
         let valuePairs:[String] = params.map { (key,value) in
             let value = "\(value)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
             return "\(key)=\(value)"
@@ -71,6 +70,6 @@ class IPaFlickrURLResourceUI: IPaURLResourceUI {
                 request.setValue(value,forHTTPHeaderField: key)
             }
         }
-        return self.apiDataOperation(with:request,complete:complete)
+        return self.apiData(with:request,complete:complete)
     }
 }

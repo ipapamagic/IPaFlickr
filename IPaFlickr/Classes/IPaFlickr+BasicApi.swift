@@ -13,15 +13,15 @@ extension IPaFlickr {
         params["method"] = api
         params["format"] = "json"
         params["nojsoncallback"] = "1"
-        _ = self.resourceUI.apiGet("rest", params: params, complete: complete)
+        _ = self.resourceUI.apiData("rest",method: .get, params: params, complete: complete)
     }
     open func apiFlickrUpload(_ image:Data,params:[String:Any],complete:@escaping IPaURLResourceUIResultHandler) {
         var params = params
         params["title"] = "photo"
 
         let file = IPaMultipartFile(name: "photo", mime: "image/jpeg", fileName: "photo.jpg", fileData: image)
-        _ = self.upResourceUI.apiUpload("upload", method: .post,headerFields: nil, params: params, file: file, complete: complete)
         
+        self.upResourceUI.apiFormDataUpload("upload", method: .post, headerFields: nil, params: params, file: file, complete: complete)
         
     }
 }

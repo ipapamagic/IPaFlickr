@@ -24,8 +24,8 @@ extension IPaFlickr {
         return baseUrlString + "?" + query.joined(separator: "&")
         
     }
-    func signedOAuth(_ baseUrlString:String,method:String, params:[String:Any]) -> [String:Any] {
-        var newParams = params
+    func signedOAuth(_ baseUrlString:String,method:String, params:[String:Any]?) -> [String:Any] {
+        var newParams = params ?? [String:Any]()
         let uuidString = UUID().uuidString
         newParams["oauth_nonce"] = uuidString[..<uuidString.index(uuidString.startIndex, offsetBy: 8)]
             
@@ -35,7 +35,7 @@ extension IPaFlickr {
         newParams["oauth_version"] = "1.0";
         newParams["oauth_signature_method"] = "HMAC-SHA1";
         newParams["oauth_consumer_key"] = self.apiKey;
-        if let authToken = self.authToken,params["oauth_token"] == nil {
+        if let authToken = self.authToken,params?["oauth_token"] == nil {
             newParams["oauth_token"] = authToken
         }
         let signatureKey:String = apiSecret + "&" + (self.authSecret ?? "")

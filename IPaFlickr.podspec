@@ -38,8 +38,8 @@ TODO: Add long description of the pod here.
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  s.dependency 'IPaSecurity', '~> 3.1'
+  s.dependency 'IPaSecurity', '~> 4.0'
   s.dependency 'IPaLog'
   s.dependency 'IPaKeyChain', '~> 2.2'
-  s.dependency 'IPaURLResourceUI', '~> 5.0'
+  s.dependency 'IPaURLResourceUI', '~> 5.2'
 end

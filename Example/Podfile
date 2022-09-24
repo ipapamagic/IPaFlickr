@@ -7,7 +7,5 @@ target 'IPaFlickr_Example' do
 
   target 'IPaFlickr_Tests' do
     inherit! :search_paths
-
-    
   end
 end

@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'IPaFlickr'
-  s.version          = '1.1'
+  s.version          = '1.2.0'
   s.summary          = 'A short description of IPaFlickr.'
 
 # This description is used to generate tags and improve search results.
@@ -30,7 +30,7 @@ TODO: Add long description of the pod here.
 
   s.ios.deployment_target = '11.0'
 
-  s.source_files = 'IPaFlickr/Classes/**/*'
+  s.source_files = 'Sources/IPaFlickr/**/*'
   
   # s.resource_bundles = {
   #   'IPaFlickr' => ['IPaFlickr/Assets/*.png']
@@ -38,8 +38,8 @@ TODO: Add long description of the pod here.
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  s.dependency 'IPaSecurity', '~> 4.0'
-  s.dependency 'IPaLog'
-  s.dependency 'IPaKeyChain', '~> 2.2'
-  s.dependency 'IPaURLResourceUI', '~> 5.2'
+  s.dependency 'IPaSecurity', '~> 4.1.0'
+  s.dependency 'IPaLog', '~> 3.1.0'
+  s.dependency 'IPaKeyChain', '~> 2.4.0'
+  s.dependency 'IPaURLResourceUI', '~> 5.4.0'
 end
